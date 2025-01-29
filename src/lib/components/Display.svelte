@@ -50,7 +50,7 @@
 
 <style>
     .card {
-        width: 30rem;
+        width: 20rem;
         border: black solid 1px;
         padding: 0.25em;
         border-radius: 0.25em;
