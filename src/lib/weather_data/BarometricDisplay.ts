@@ -4,34 +4,25 @@ import StoreSvelte from '$lib/weather_data/Store.svelte';
 import type { Subject } from '$lib/weather_data/Subject.interface';
 import type WeatherDataSvelte from '$lib/weather_data/WeatherData.svelte';
 
-export default class FullDisplay
+export default class BarometricDisplay
 	extends StoreSvelte implements Observer<WeatherDataSvelte>, Display {
 
-	constructor() {
-		super();
+		constructor() {
+			super();
 
-		this.display = this.value.join(' - ')
-	}
-
+			this.display = `Barometric: ${this.value} inHg`;
+		}
 
 	subject?: WeatherDataSvelte;
-	value = [
-		'Temperature: 0 Deg',
-		'Humidity: 0%',
-		'Barometric: 0 inHg'
-	]
+	value = 0;
 
 	notify(weatherData: WeatherDataSvelte) {
-		this.value = [
-			`Temperature: ${weatherData.temperature} Deg`,
-			`Humidity: ${weatherData.humidity}%`,
-			`Barometric: ${weatherData.barometric} inHg`
-		];
+		this.value = weatherData.barometric;
 
 		this.updateDisplay();
 	}
 
 	updateDisplay() {
-		this.display = this.value.join(' - ')
+		this.display = `Barometric: ${this.value} inHg`;
 	}
 }

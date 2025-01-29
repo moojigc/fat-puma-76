@@ -1,13 +1,14 @@
 import type { Observer } from '$lib/weather_data/Observer.interface';
 import type { Subject } from '$lib/weather_data/Subject.interface';
+import { SvelteSet } from 'svelte/reactivity';
 
-export default class WeatherData implements Subject {
+export default class WeatherDataSvelte implements Subject {
 	temperature = 0;
 	humidity = 0;
 	barometric = 0;
 	interval?: number;
 
-	observers = new Set<Observer>();
+	observers = new SvelteSet<Observer>()
 
 	measurementsChanged() {
 		this.notifyObservers();
@@ -24,13 +25,16 @@ export default class WeatherData implements Subject {
 			return false;
 		}
 
+		observer.subject = this;
 		this.observers.add(observer);
 
 		return true;
 	}
 
-	unregisterObserver(string): boolean {
-		return this.observers.delete(string);
+	unregisterObserver(observer: Observer): boolean {
+		observer.subject = null;
+
+		return this.observers.delete(observer);
 	}
 
 	start() {
@@ -38,7 +42,17 @@ export default class WeatherData implements Subject {
 			this.temperature = this._getRandomValue();
 			this.barometric = this._getRandomValue();
 			this.humidity = this._getRandomValue();
-		}, 50);
+
+			// console.log(
+			// 	{
+			// 		temperature: this.temperature,
+			// 		humidity: this.humidity,
+			// 		barometric: this.barometric
+			// 	}
+			// );
+
+			this.measurementsChanged();
+		}, 1000);
 	}
 
 	stop() {

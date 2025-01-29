@@ -1,26 +1,29 @@
 import type { Observer } from '$lib/weather_data/Observer.interface';
 import type { Display } from '$lib/weather_data/Display.interface';
-import Store from '$lib/weather_data/Store';
+import StoreSvelte from '$lib/weather_data/Store.svelte';
 import type { Subject } from '$lib/weather_data/Subject.interface';
-import type WeatherData from '$lib/weather_data/WeatherData';
+import type WeatherDataSvelte from '$lib/weather_data/WeatherData.svelte';
 
 export default class HumidityDisplay
-	extends Store implements Observer<WeatherData>, Display {
+	extends StoreSvelte implements Observer<WeatherDataSvelte>, Display {
 
-	subject?: WeatherData;
-	value = 0;
+	constructor() {
+		super();
 
-	get display() {
-		return `Humidity: ${this.value}%`;
+		this.display = `Humidity: ${this.value} inHg`;
 	}
 
-	notify(weatherData: WeatherData) {
+
+	subject?: WeatherDataSvelte;
+	value = 0;
+
+	notify(weatherData: WeatherDataSvelte) {
 		this.value = weatherData.humidity;
 
 		this.updateDisplay();
 	}
 
 	updateDisplay() {
-		this.set(this.value);
+		this.display = `Humidity: ${this.value}%`;
 	}
 }
